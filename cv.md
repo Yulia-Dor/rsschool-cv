@@ -8,7 +8,7 @@
 
 ## Skills:
 1. I started my work with Microsoft Visual Basic 6.0 and Oracle database.
-1. Actively studied further work with the PostgreSQL database. Creation of copies of a DB\Restoration. Creation of users with distribution of access rights. Implementation of procedures and functions, writing complex queries. Working with composite types. Implementation of PL/Python functions.
+1. Actively studied further work with the PostgreSQL database. Creation Backup / Restore. Creation of users with distribution of access rights. Implementation of procedures and functions, writing complex queries. Working with composite types. Implementation of PL/Python functions.
 1. Worked on migrating data from Oracle to PostgreSQL.
 1. Working with Python Implementation of scripts for processing data from devices (controllers) using TCP, UDP, SNMP, MQTT, SMPP, OCPP protocols.
 1. Work in Linux environment. Installing software, running scripts, working with PostgreSQL, basic commands.
@@ -62,9 +62,13 @@ begin
     set name_file=l_id_row
     where id=l_id_row;
  
-  folder= (select f.f_year from return_file f where id=l_id_row )::text||'/'||(select case when f.f_month::INTEGER<10 then '0'||f.f_month else f.f_month end from return_file f where id=l_id_row)::text||'/'||(select case when f.f_day::INTEGER<10 then '0'||f.f_day else f.f_day end from return_file f where id=l_id_row)::text;
+  folder= (select f.f_year from return_file f where id=l_id_row )::text||'/'||(select case when f.f_month::INTEGER<10 then '0'||f.f_month else f.f_month end 
+                                                                              from return_file f where id=l_id_row)::text||'/'
+                                                                              ||(select case when f.f_day::INTEGER<10 then '0'||f.f_day else f.f_day end 
+                                                                              from return_file f where id=l_id_row)::text;
   puth='/media/'||folder||'/';
-  filepath :=  puth||(select name_file from return_file where id=l_id_row)||'.'||(select (select e.name from return_file_extension e where e.id=f.id_extension) from return_file f where f.id=l_id_row);
+  filepath :=  puth||(select name_file from return_file where id=l_id_row)||'.'||(select (select e.name from return_file_extension e where e.id=f.id_extension) 
+                      from return_file f where f.id=l_id_row);
   RAISE NOTICE 'filepath %', filepath;
   loid := lo_create(-1);
   lfd  := lo_open(loid, CAST(X'20000' | X'40000' AS integer));
