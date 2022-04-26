@@ -62,9 +62,11 @@ begin
     set name_file=l_id_row
     where id=l_id_row;
  
-  folder= (select f.f_year from return_file f where id=l_id_row )::text||'/'||(select case when f.f_month::INTEGER<10 then '0'||f.f_month else f.f_month end 
+  folder= (select f.f_year from return_file f where id=l_id_row )::text||'/'||(select case when f.f_month::INTEGER<10 
+                                                                                       then '0'||f.f_month else f.f_month end 
                                                                               from return_file f where id=l_id_row)::text||'/'
-                                                                              ||(select case when f.f_day::INTEGER<10 then '0'||f.f_day else f.f_day end 
+                                                                              ||(select case when f.f_day::INTEGER<10 
+                                                                                        then '0'||f.f_day else f.f_day end 
                                                                               from return_file f where id=l_id_row)::text;
   puth='/media/'||folder||'/';
   filepath :=  puth||(select name_file from return_file where id=l_id_row)||'.'||(select (select e.name from return_file_extension e where e.id=f.id_extension) 
