@@ -1,2 +1,1 @@
-# rsschool-cv
-rsschool-cv
+https://Yulia-Dor.github.io/rsschool-cv/
