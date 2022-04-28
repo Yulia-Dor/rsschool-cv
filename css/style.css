@@ -1,5 +1,18 @@
-p {
+.name {
     color: red;
-    width: 500px;
-    border: 1px solid black;
-  }
+    font-size: 30px;
+}
+form {
+  background: #fff;
+  width: 600px;
+  margin: auto;
+  padding: 30px 50px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+.code{
+  background: rgb(233, 194, 123);
+  width: 500px;
+  margin: auto;
+  padding: 30px 50px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}

@@ -4,13 +4,166 @@
 <head>
 
 <meta charset="UTF-8">
+<link rel="stylesheet" href="css/style.css">
 
 <title> Task HTML, CSS & Get Basic</title>
 </head>
 
 <body>
-
-Пример простой страницы
+  <form>
+    <p class="name">Yulia Daruzhinskaia</p>
+    <hr>
+    <h3>Junior Frontend Developer</h3>
+    <hr>
+    <h4>Contacts</h4>
+    <ul>
+      <li>Location: Minsk, Belarus</li>
+      <li>Phone: +375 44 51 01 001</li>
+      <li>Email: dorujinskaia@gmail.com</li>
+      <li>GitHub: Yulia-Dor</li>
+    </ul>
+    <hr>
+    <h3>Skills:</h3>
+    <ol>
+      <li>I started my work with Microsoft Visual Basic 6.0 and Oracle database.</li>
+      <li>Actively studied further work with the PostgreSQL database. Creation Backup / Restore. Creation of users with distribution of access rights. Implementation of procedures and functions, writing complex queries. Working with composite types. Implementation of PL/Python functions.</li>
+      <li>Worked on migrating data from Oracle to PostgreSQL.</li>
+      <li>Working with Python Implementation of scripts for processing data from devices (controllers) using TCP, UDP, SNMP, MQTT, SMPP, OCPP protocols.</li>
+      <li>Work in Linux environment. Installing software, running scripts, working with PostgreSQL, basic commands.</li>
+     </ol>
+     <hr>
+     <h3>Skills and Proficiency:</h3>
+     <ul>
+        <li>Oracle, PostgreSQL</li>
+        <li>Python</li>
+        <li>Visual Basic 6.0</li>
+        <li>Linux</li>
+        <li>Git, GitHub</li>
+        <li>HTML5, CSS</li>
+        <li>JavaScript Basics</li>
+        <li>VS Code, IntelliJ IDEA</li>
+      </ul> 
+    <hr>
+    <h3>Code Example:</h3>
+    <section class="code"><code><pre>
+CREATE OR REPLACE FUNCTION public.save_file_return (
+ p_return bigint,
+ p_name text
+)
+RETURNS text AS
+$body$
+declare
+loid oid;
+lfd integer;
+filepath text;
+puth text;
+folder text;
+l_id_row bigint;
+l_error text;
+msg text;
+ctx text;
+l_result text;
+begin
+insert into return_file(id_return, id_extension, name_file_fact, 
+                        f_year, f_month, f_day, id_user, pa)
+(select t.id_return, 
+(select e.id from return_file_extension e 
+ where e.name =last_elem(string_to_array(t.file_name, '.'))),
+t.file_name,
+split_part(t.year_month_dem,'/',1),
+split_part(t.year_month_dem,'/',2),
+split_part(t.year_month_dem,'/',3),
+t.user_id,
+1            
+from return_file_tmp t 
+where t.id_return=p_return and t.file_name=p_name) 
+RETURNING id into l_id_row;
+          
+update return_file
+set name_file=l_id_row
+where id=l_id_row;
+       
+folder= (select f.f_year from return_file f where id=l_id_row )::text
+        ||'/'
+        ||(select case when f.f_month::INTEGER<10 
+                       then '0'||f.f_month else f.f_month end 
+           from return_file f where id=l_id_row)::text||'/'
+        ||(select case when f.f_day::INTEGER<10 
+                  then '0'||f.f_day else f.f_day end 
+           from return_file f where id=l_id_row)::text;
+puth='/media/'||folder||'/';
+filepath :=  puth
+             ||(select name_file from return_file where id=l_id_row)
+             ||'.'
+             ||(select (select e.name from return_file_extension e
+                      where e.id=f.id_extension) 
+             from return_file f where f.id=l_id_row);
+RAISE NOTICE 'filepath %', filepath;
+loid := lo_create(-1);
+lfd  := lo_open(loid, CAST(X'20000' | X'40000' AS integer));
+perform lowrite(lfd,(select  file from return_file_tmp t 
+                      where t.id_return=p_return and t.file_name=p_name));
+perform lo_export(loid, filepath);
+perform lo_close(lfd);
+perform lo_unlink(loid);
+        
+delete from return_file_tmp
+where id_return=p_return
+      and file_name=p_name;
+               
+if l_id_row is null then
+    l_result='Warning! File not found!';
+else
+    l_result='OK';
+end if;
+        
+EXCEPTION
+    WHEN OTHERS  THEN
+       l_error=SQLSTATE;
+        if l_error='23502' then
+            RAISE NOTICE '%', 1;
+            l_result='Error! Document extension not found!';
+        ELSIF l_error='58P01' then
+            RAISE NOTICE '%', 1;
+            l_result='Error! Path not found!';
+        ELSIF l_error='42501' then
+            RAISE NOTICE '%', 1;
+            l_result='Error! Permission denied!';
+        ELSE 
+            l_result=SQLERRM;
+        end if;
+    end;
+        
+return l_result;
+end;
+$body$
+LANGUAGE 'plpgsql'
+VOLATILE
+CALLED ON NULL INPUT
+SECURITY INVOKER
+PARALLEL UNSAFE
+COST 100;</pre></code></section>
+<hr>
+<h3>Education:</h3>
+<ul>
+    <li>Molodechno College of Trade and Economics, technician - programmer</li>
+    <li>Higher Radio Engineering College, teacher-programmer</li>
+</ul>
+<hr>
+<h3>Courses:</h3>
+<ul>
+    <li>DEV1. Development of the server part of the PostgreSQK application 12. Basic course</li>
+    <li>DEV2. Development of the server part of the PostgreSQK application 12. Advanced course</li>
+    <li>QPT: PostgreSQL. Query Optimization</li>
+    <li>RS School. Preparatory course «JavaScript/Front-end. Stage 0</li>
+</ul>
+<hr>
+<h3>Languages:</h3>
+<ul>
+    <li>Russian - Native</li>
+    <li>English - A2</li>
+</ul>
+    </form>
 </body>
 
 </html>
